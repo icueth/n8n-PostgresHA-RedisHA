@@ -1,0 +1,27 @@
+# n8n Enterprise-Ready Stack
+
+## Ignore
+node_modules/
+.env
+.env.local
+*.log
+.DS_Store
+Thumbs.db
+
+## Docker
+docker-compose.override.yml
+
+## IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+## Data (for local development)
+data/
+tmp/
+
+## Backups
+*.sql
+*.dump
+*.backup
