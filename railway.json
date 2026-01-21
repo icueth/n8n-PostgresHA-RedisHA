@@ -116,6 +116,17 @@
                 "MASTER_HOST": "${{redis-master.RAILWAY_PRIVATE_DOMAIN}}"
             }
         },
+        "redis-haproxy": {
+            "source": {
+                "directory": "redis-haproxy"
+            },
+            "env": {
+                "REDIS_PASSWORD": "${{REDIS_PASSWORD}}",
+                "SENTINEL_HOST": "${{redis-sentinel.RAILWAY_PRIVATE_DOMAIN}}",
+                "SENTINEL_PORT": "26379",
+                "SENTINEL_MASTER_NAME": "mymaster"
+            }
+        },
         "n8n": {
             "source": {
                 "directory": "n8n"
@@ -129,7 +140,7 @@
                 "DB_POSTGRESDB_PASSWORD": "${{POSTGRES_PASSWORD}}",
                 "DB_POSTGRESDB_SSL_ENABLED": "false",
                 "EXECUTIONS_MODE": "queue",
-                "QUEUE_BULL_REDIS_HOST": "${{redis-master.RAILWAY_PRIVATE_DOMAIN}}",
+                "QUEUE_BULL_REDIS_HOST": "${{redis-haproxy.RAILWAY_PRIVATE_DOMAIN}}",
                 "QUEUE_BULL_REDIS_PORT": "6379",
                 "QUEUE_BULL_REDIS_PASSWORD": "${{REDIS_PASSWORD}}",
                 "QUEUE_HEALTH_CHECK_ACTIVE": "true",
@@ -167,7 +178,7 @@
                 "DB_POSTGRESDB_PASSWORD": "${{POSTGRES_PASSWORD}}",
                 "DB_POSTGRESDB_SSL_ENABLED": "false",
                 "EXECUTIONS_MODE": "queue",
-                "QUEUE_BULL_REDIS_HOST": "${{redis-master.RAILWAY_PRIVATE_DOMAIN}}",
+                "QUEUE_BULL_REDIS_HOST": "${{redis-haproxy.RAILWAY_PRIVATE_DOMAIN}}",
                 "QUEUE_BULL_REDIS_PORT": "6379",
                 "QUEUE_BULL_REDIS_PASSWORD": "${{REDIS_PASSWORD}}",
                 "N8N_ENCRYPTION_KEY": "${{N8N_ENCRYPTION_KEY}}",
