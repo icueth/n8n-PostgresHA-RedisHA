@@ -6,10 +6,6 @@ echo "  n8n Enterprise-Ready Stack"
 echo "  Powered by PostgreSQL HA + Redis"
 echo "========================================="
 
-# Wait for database to be ready (Railway services may start in parallel)
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] Waiting 3 minutes for database to be ready..."
-sleep 180
-
 echo ""
 echo "Configuration Summary:"
 echo "  - Execution Mode: ${EXECUTIONS_MODE:-regular}"
@@ -19,7 +15,7 @@ echo "  - Redis Host: ${QUEUE_BULL_REDIS_HOST:-redis-n8n.railway.internal}"
 echo "  - Timezone: ${GENERIC_TIMEZONE:-UTC}"
 echo ""
 
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] Starting n8n..."
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Starting n8n (will retry DB connection automatically)..."
 
 # Execute n8n with any passed arguments
 exec n8n "$@"

@@ -6,9 +6,9 @@ echo "  n8n Worker - Queue Mode"
 echo "  Powered by PostgreSQL HA + Redis"
 echo "========================================="
 
-# Wait for n8n main to initialize and database migrations
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] Waiting 3.5 minutes for n8n main instance and database..."
-sleep 210
+# Wait for n8n main to initialize
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Waiting 60s for n8n main instance..."
+sleep 60
 
 echo ""
 echo "Worker Configuration:"
