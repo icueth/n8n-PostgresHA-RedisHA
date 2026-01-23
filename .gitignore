@@ -21,7 +21,8 @@ docker-compose.override.yml
 data/
 tmp/
 
-## Backups
-*.sql
+## Backups (exclude backup files, not init scripts)
 *.dump
 *.backup
+*_backup.sql
+*_dump.sql

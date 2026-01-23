@@ -4,11 +4,11 @@ FROM n8nio/n8n:latest
 USER root
 
 # Install additional dependencies for better compatibility
-RUN apk add --no-cache \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     bash \
     curl \
     jq \
-    tzdata
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy custom entrypoint
 COPY entrypoint.sh /custom-entrypoint.sh
