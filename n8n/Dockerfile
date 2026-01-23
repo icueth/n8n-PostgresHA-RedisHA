@@ -10,4 +10,7 @@ RUN chmod +x /custom-entrypoint.sh
 # Switch back to node user for security
 USER node
 
+# Expose n8n port
+EXPOSE 5678
+
 ENTRYPOINT ["/custom-entrypoint.sh"]
