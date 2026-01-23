@@ -1,8 +1,5 @@
 # ใช้ Image เฉพาะสำหรับ Unified Task Runner (Python, JS)
 FROM n8nio/runners:latest
 
-# สลับเป็น root เพื่อลง library เพิ่มเติม (ถ้าต้องการ)
-USER root
+# ติดตั้ง library เพิ่มเติมได้ตามต้องการ
 # RUN pip install pandas numpy
-
-USER node
