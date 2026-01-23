@@ -4,15 +4,14 @@ set -e
 echo "🚀 Starting Ollama server..."
 ollama serve &
 
-# รอจนกว่า Ollama API จะตอบกลับ (Port 11434 พร้อมใช้งาน)
-echo "⏳ Waiting for Ollama API to be ready..."
-# ลองเช็คไปเรื่อยๆ จนกว่าจะตอบกลับ
-while ! curl -s http://127.0.0.1:11434/api/tags > /dev/null; do
+# รอจนกว่า Ollama API จะตอบกลับ (ใช้ ollama list เช็คความพร้อม)
+echo "⏳ Waiting for Ollama server to be ready..."
+while ! ollama list > /dev/null 2>&1; do
     echo "..."
     sleep 3
 done
 
-echo "✅ Ollama API is up!"
+echo "✅ Ollama server is up!"
 
 MODEL_NAME="${OLLAMA_MODEL:-qwen2.5:3b}"
 
