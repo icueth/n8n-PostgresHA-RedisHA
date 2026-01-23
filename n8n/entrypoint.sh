@@ -7,8 +7,8 @@ echo "  Powered by PostgreSQL HA + Redis"
 echo "========================================="
 
 # Wait for database to be ready (Railway services may start in parallel)
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] Waiting for database to be ready..."
-sleep 30
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Waiting 3 minutes for database to be ready..."
+sleep 180
 
 echo ""
 echo "Configuration Summary:"
