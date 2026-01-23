@@ -108,6 +108,12 @@ services:
       - DB_POSTGRESDB_USER=postgres
       - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD:-changeme}
       - DB_POSTGRESDB_SSL_ENABLED=false
+      # Task Runner - Pro Configuration
+      - N8N_TASKS_RUNNER_ENABLED=true
+      - N8N_TASKS_RUNNER_MODE=external
+      - N8N_TASKS_RUNNER_AUTH_TOKEN=${N8N_TASKS_RUNNER_AUTH_TOKEN:-secret-token-123}
+      - N8N_TASKS_RUNNER_HOST=n8n-python-runner
+      - N8N_TASKS_RUNNER_PORT=5678
       - EXECUTIONS_MODE=queue
       - QUEUE_BULL_REDIS_HOST=redis
       - QUEUE_BULL_REDIS_PORT=6379
@@ -152,6 +158,12 @@ services:
       - QUEUE_BULL_REDIS_PORT=6379
       - QUEUE_BULL_REDIS_PASSWORD=${REDIS_PASSWORD:-changeme}
       - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY:-your-encryption-key-min-32-chars}
+      # Task Runner - Pro Configuration
+      - N8N_TASKS_RUNNER_ENABLED=true
+      - N8N_TASKS_RUNNER_MODE=external
+      - N8N_TASKS_RUNNER_AUTH_TOKEN=${N8N_TASKS_RUNNER_AUTH_TOKEN:-secret-token-123}
+      - N8N_TASKS_RUNNER_HOST=n8n-python-runner
+      - N8N_TASKS_RUNNER_PORT=5678
       - GENERIC_TIMEZONE=Asia/Bangkok
       - TZ=Asia/Bangkok
       - N8N_CONCURRENCY_PRODUCTION_LIMIT=10
@@ -162,6 +174,20 @@ services:
       - n8n-network
     deploy:
       replicas: 2
+    links:
+      - n8n-python-runner
+
+  n8n-python-runner:
+    build:
+      context: ./n8n-python-runner
+    container_name: n8n-python-runner
+    environment:
+      - N8N_TASKS_RUNNER_AUTH_TOKEN=${N8N_TASKS_RUNNER_AUTH_TOKEN:-secret-token-123}
+    ports:
+      - "5679:5678"
+    networks:
+      - n8n-network
+    restart: always
 
 # ==========================================
 # Volumes

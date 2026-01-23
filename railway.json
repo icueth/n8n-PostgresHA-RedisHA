@@ -31,6 +31,13 @@
             "config": {
                 "length": 64
             }
+        },
+        "N8N_TASKS_RUNNER_AUTH_TOKEN": {
+            "description": "Authentication token for the external task runner",
+            "label": "n8n Task Runner Auth Token",
+            "config": {
+                "length": 32
+            }
         }
     },
     "services": {
@@ -127,7 +134,12 @@
                 "EXECUTIONS_DATA_SAVE_ON_ERROR": "all",
                 "EXECUTIONS_DATA_SAVE_ON_SUCCESS": "all",
                 "EXECUTIONS_DATA_SAVE_MANUAL_EXECUTIONS": "true",
-                "N8N_LOG_LEVEL": "info"
+                "N8N_LOG_LEVEL": "info",
+                "N8N_TASKS_RUNNER_ENABLED": "true",
+                "N8N_TASKS_RUNNER_MODE": "external",
+                "N8N_TASKS_RUNNER_AUTH_TOKEN": "${{N8N_TASKS_RUNNER_AUTH_TOKEN}}",
+                "N8N_TASKS_RUNNER_HOST": "${{n8n-python-runner.RAILWAY_PRIVATE_DOMAIN}}",
+                "N8N_TASKS_RUNNER_PORT": "5678"
             }
         },
         "n8n-worker": {
@@ -150,7 +162,20 @@
                 "GENERIC_TIMEZONE": "Asia/Bangkok",
                 "TZ": "Asia/Bangkok",
                 "N8N_CONCURRENCY_PRODUCTION_LIMIT": "10",
-                "N8N_LOG_LEVEL": "info"
+                "N8N_LOG_LEVEL": "info",
+                "N8N_TASKS_RUNNER_ENABLED": "true",
+                "N8N_TASKS_RUNNER_MODE": "external",
+                "N8N_TASKS_RUNNER_AUTH_TOKEN": "${{N8N_TASKS_RUNNER_AUTH_TOKEN}}",
+                "N8N_TASKS_RUNNER_HOST": "${{n8n-python-runner.RAILWAY_PRIVATE_DOMAIN}}",
+                "N8N_TASKS_RUNNER_PORT": "5678"
+            }
+        },
+        "n8n-python-runner": {
+            "source": {
+                "directory": "n8n-python-runner"
+            },
+            "env": {
+                "N8N_TASKS_RUNNER_AUTH_TOKEN": "${{N8N_TASKS_RUNNER_AUTH_TOKEN}}"
             }
         }
     }

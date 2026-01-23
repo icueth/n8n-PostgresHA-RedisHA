@@ -14,6 +14,7 @@ Deploying n8n in production requires a robust database, a queue system for high-
 - **Redis** for queue-based execution and scaling
 - **n8n Main Instance** serving web UI and webhooks
 - **n8n Workers** processing executions in parallel
+- **External Python Task Runner** for secure, isolated code execution
 
 Everything deploys automatically with proper networking, health checks, and restart policies.
 
@@ -55,11 +56,12 @@ Everything deploys automatically with proper networking, health checks, and rest
 
 ## Dependencies for n8n Enterprise-Ready Stack Hosting
 
-| Dependency     | Version | Purpose                          |
-| -------------- | ------- | -------------------------------- |
-| **n8n**        | Latest  | Workflow automation engine       |
-| **PostgreSQL** | 18      | Primary database with extensions |
-| **Redis**      | 7.4     | Queue management for workers     |
+| Dependency        | Version | Purpose                           |
+| ----------------- | ------- | --------------------------------- |
+| **n8n**           | Latest  | Workflow automation engine        |
+| **Python Runner** | Latest  | Dedicated Python execution engine |
+| **PostgreSQL**    | 18      | Primary database with extensions  |
+| **Redis**         | 7.4     | Queue management for workers      |
 
 ### PostgreSQL Extensions Included
 
@@ -88,22 +90,22 @@ Everything deploys automatically with proper networking, health checks, and rest
 │                 Railway Project                     │
 ├────────────────────────────────────────────────────┤
 │                                                     │
-│  ┌─────────┐  ┌──────────┐  ┌──────────┐          │
-│  │  n8n    │  │ worker-1 │  │ worker-2 │          │
-│  │  (UI)   │  │ (queue)  │  │ (queue)  │          │
-│  └────┬────┘  └────┬─────┘  └────┬─────┘          │
-│       │            │             │                 │
-│       ▼            ▼             ▼                 │
-│  ┌─────────────────────────────────────┐          │
-│  │            Redis (Queue)            │          │
-│  └─────────────────────────────────────┘          │
-│                     │                              │
-│  ┌──────────────────┴──────────────────┐          │
-│  │         PostgreSQL HA               │          │
-│  │  ┌─────────┐    ┌─────────┐        │          │
-│  │  │ Primary │───▶│ Replica │        │          │
-│  │  └─────────┘    └─────────┘        │          │
-│  └─────────────────────────────────────┘          │
+│  ┌─────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐  │
+│  │  n8n    │  │ worker-1 │  │ worker-2 │  │ Python   │  │
+│  │  (UI)   │  │ (queue)  │  │ (queue)  │  │ Runner   │  │
+│  └────┬────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘  │
+│       │            │             │             │         │
+│       ▼            ▼             ▼             ▼         │
+│  ┌────────────────────────────────────────────────────┐  │
+│  │                   Redis (Queue)                    │  │
+│  └────────────────────────────────────────────────────┘  │
+│                        │                                 │
+│  ┌─────────────────────┴──────────────────────┐          │
+│  │                PostgreSQL HA               │          │
+│  │        ┌─────────┐      ┌─────────┐        │          │
+│  │        │ Primary │────▶ │ Replica │        │          │
+│  │        └─────────┘      └─────────┘        │          │
+│  └─────────────────────────────────────────────┘          │
 └────────────────────────────────────────────────────┘
 ```
 
@@ -113,12 +115,13 @@ Everything deploys automatically with proper networking, health checks, and rest
 
 ### Auto-Generated Variables
 
-| Variable                         | Description            |
-| -------------------------------- | ---------------------- |
-| `POSTGRES_PASSWORD`              | PostgreSQL password    |
-| `REDIS_PASSWORD`                 | Redis password         |
-| `N8N_ENCRYPTION_KEY`             | Credentials encryption |
-| `N8N_USER_MANAGEMENT_JWT_SECRET` | User auth JWT          |
+| Variable                         | Description                  |
+| -------------------------------- | ---------------------------- |
+| `POSTGRES_PASSWORD`              | PostgreSQL password          |
+| `REDIS_PASSWORD`                 | Redis password               |
+| `N8N_ENCRYPTION_KEY`             | Credentials encryption       |
+| `N8N_USER_MANAGEMENT_JWT_SECRET` | User auth JWT                |
+| `N8N_TASKS_RUNNER_AUTH_TOKEN`    | Secure token for Task Runner |
 
 ### Customizable Settings
 
