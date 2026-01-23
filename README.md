@@ -113,6 +113,23 @@ Everything deploys automatically with proper networking, health checks, and rest
 
 ## Configuration
 
+### 🎯 **Easy Configuration - Single Source of Truth**
+
+**Edit environment variables in the `n8n` service only!**
+
+This template uses a **Single Source of Truth** pattern:
+
+- ✅ Edit environment variables in the **n8n service only**
+- ✅ **n8n-worker** automatically syncs values from n8n via `${{n8n.VARIABLE}}`
+- ✅ **n8n-task-runner** automatically syncs required values from n8n
+- ✅ **No need to edit ENV in worker or task runner** - everything syncs automatically
+
+**Example:** To change timezone to `Asia/Bangkok`
+
+1. Go to **n8n service** → Variables
+2. Edit `GENERIC_TIMEZONE="Asia/Bangkok"` and `TZ="Asia/Bangkok"`
+3. **Done!** Worker and Task Runner will use the same values automatically
+
 ### Auto-Generated Variables
 
 | Variable                         | Description                  |
@@ -123,13 +140,15 @@ Everything deploys automatically with proper networking, health checks, and rest
 | `N8N_USER_MANAGEMENT_JWT_SECRET` | User auth JWT                |
 | `N8N_TASKS_RUNNER_AUTH_TOKEN`    | Secure token for Task Runner |
 
-### Customizable Settings
+### Customizable Settings (Edit in n8n service only)
 
-| Variable                           | Default | Description                     |
-| ---------------------------------- | ------- | ------------------------------- |
-| `EXECUTIONS_MODE`                  | `queue` | Use `regular` for simple setups |
-| `GENERIC_TIMEZONE`                 | `UTC`   | Your timezone                   |
-| `N8N_CONCURRENCY_PRODUCTION_LIMIT` | `10`    | Max parallel executions/worker  |
+| Variable                           | Default        | Description                     |
+| ---------------------------------- | -------------- | ------------------------------- |
+| `EXECUTIONS_MODE`                  | `queue`        | Use `regular` for simple setups |
+| `GENERIC_TIMEZONE`                 | `Asia/Bangkok` | Your timezone                   |
+| `TZ`                               | `Asia/Bangkok` | System timezone                 |
+| `N8N_CONCURRENCY_PRODUCTION_LIMIT` | `10`           | Max parallel executions/worker  |
+| `N8N_LOG_LEVEL`                    | `info`         | Logging level                   |
 
 ---
 
@@ -160,20 +179,61 @@ Duplicate `n8n-worker` service to add more workers.
 
 ## Getting Started
 
-1. **Deploy** - Click the Railway button above
-2. **Configure** - Set variables (auto-generated)
-3. **Wait** - 3-5 minutes for full deployment
-4. **Access** - Visit your n8n URL and create admin account
+### 🚀 **Simple 3-Step Installation**
+
+1. **Deploy**
+   - Click the "Deploy on Railway" button above
+   - Railway will automatically create 7 services:
+     - PostgreSQL Primary + Replica + Proxy
+     - Redis
+     - n8n (Main)
+     - n8n-worker
+     - n8n-task-runner
+
+2. **Wait for Deployment**
+   - Takes 3-5 minutes
+   - Verify all services show "Active" (green status)
+
+3. **Access n8n**
+   - Click on **n8n service** → Settings → Networking
+   - Enable Public Domain URL
+   - Create your first admin account
+
+### ⚙️ **Customization (Optional)**
+
+**Want to change timezone or other settings?**
+
+- Go to **n8n service** → Variables
+- Edit the variables you need (e.g., `GENERIC_TIMEZONE`, `TZ`)
+- **Done!** No need to edit worker or task runner
 
 ---
 
 ## Troubleshooting
 
-**n8n won't start**: Check `N8N_ENCRYPTION_KEY` is set, wait for PostgreSQL to initialize.
+### ❌ **n8n won't start**
 
-**Workers not processing**: Verify `EXECUTIONS_MODE=queue` and Redis connection.
+- ✅ Verify PostgreSQL Primary is "Active"
+- ✅ Wait 2-3 minutes for database initialization
+- ✅ Check that `N8N_ENCRYPTION_KEY` was auto-generated
 
-**Database errors**: Wait 2-3 minutes for PostgreSQL, check passwords match.
+### ❌ **Workers not processing**
+
+- ✅ Verify Redis is "Active"
+- ✅ Check that `EXECUTIONS_MODE=queue` in n8n service
+- ✅ Review worker logs for error messages
+
+### ❌ **Database connection errors**
+
+- ✅ Wait 2-3 minutes for PostgreSQL Proxy to be ready
+- ✅ Verify passwords match across services
+- ✅ Restart n8n service after PostgreSQL is ready
+
+### 💡 **Tips**
+
+- View logs at each service → Deployments → View Logs
+- If issues persist, restart the problematic service
+- Edit ENV in **n8n service only** - workers sync automatically
 
 ---
 
@@ -190,6 +250,16 @@ By deploying n8n Enterprise-Ready Stack on Railway, you are one step closer to s
 - [n8n Documentation](https://docs.n8n.io)
 - [Railway Documentation](https://docs.railway.app)
 - [n8n Community](https://community.n8n.io)
+
+---
+
+## Support This Project
+
+If this template saves you time and money, consider supporting its development! ☕
+
+[![Support Me](https://img.shields.io/badge/Support%20Me-Stripe-blue?style=for-the-badge&logo=stripe)](https://buy.stripe.com/14A28sbLa5mJ8SM5qY2VG01)
+
+Your support helps maintain and improve this template for the community. Thank you! 🙏
 
 ---
 
