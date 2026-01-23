@@ -180,6 +180,22 @@
                 "N8N_RUNNERS_AUTH_TOKEN": "${{N8N_TASKS_RUNNER_AUTH_TOKEN}}",
                 "N8N_RUNNERS_TASK_BROKER_URI": "http://${{n8n.RAILWAY_PRIVATE_DOMAIN}}:5679"
             }
+        },
+        "ollama": {
+            "source": {
+                "directory": "ollama"
+            },
+            "env": {
+                "OLLAMA_HOST": "0.0.0.0",
+                "OLLAMA_MODEL": "llama3.2:3b",
+                "OLLAMA_KEEP_ALIVE": "24h"
+            },
+            "mounts": [
+                {
+                    "mountPath": "/root/.ollama",
+                    "volume": "ollama-models"
+                }
+            ]
         }
     }
 }
