@@ -2,29 +2,29 @@
 set -e
 
 echo "🚀 Starting Ollama server..."
-
-# Start Ollama in the background
 ollama serve &
 
-# Wait for Ollama to be ready
-echo "⏳ Waiting for Ollama to be ready..."
-sleep 10
+# รอจนกว่า Ollama API จะตอบกลับ (Port 11434 พร้อมใช้งาน)
+echo "⏳ Waiting for Ollama API to be ready..."
+until curl -s http://localhost:11434/api/tags > /dev/null; do
+    sleep 2
+done
 
-# Check if model is already pulled, if not pull it
-MODEL_NAME="${OLLAMA_MODEL:-llama3.2:3b}"
+MODEL_NAME="${OLLAMA_MODEL:-qwen2.5:3b}"
 
 echo "📦 Checking model: $MODEL_NAME"
+# ใช้ grep -w เพื่อเช็คชื่อ model ให้แม่นยำขึ้น
 if ! ollama list | grep -q "$MODEL_NAME"; then
-    echo "📥 Pulling model: $MODEL_NAME (this may take a few minutes)..."
-    ollama pull "$MODEL_NAME"
-    echo "✅ Model $MODEL_NAME pulled successfully!"
+    echo "📥 Pulling model: $MODEL_NAME (This may take a few minutes)..."
+    if ollama pull "$MODEL_NAME"; then
+        echo "✅ Model $MODEL_NAME pulled successfully!"
+    else
+        echo "❌ Failed to pull model $MODEL_NAME"
+        exit 1
+    fi
 else
     echo "✅ Model $MODEL_NAME already exists"
 fi
 
-echo "🎉 Ollama is ready!"
-echo "📡 API available at: http://0.0.0.0:11434"
-echo "🤖 Default model: $MODEL_NAME"
-
-# Keep container running
+echo "🎉 Ollama is ready and model $MODEL_NAME is loaded!"
 wait
