@@ -112,7 +112,7 @@ services:
       - N8N_TASKS_RUNNER_ENABLED=true
       - N8N_TASKS_RUNNER_MODE=external
       - N8N_TASKS_RUNNER_AUTH_TOKEN=${N8N_TASKS_RUNNER_AUTH_TOKEN:-secret-token-123}
-      - N8N_TASKS_RUNNER_HOST=n8n-python-runner
+      - N8N_TASKS_RUNNER_HOST=n8n-task-runner
       - N8N_TASKS_RUNNER_PORT=5678
       - EXECUTIONS_MODE=queue
       - QUEUE_BULL_REDIS_HOST=redis
@@ -162,7 +162,7 @@ services:
       - N8N_TASKS_RUNNER_ENABLED=true
       - N8N_TASKS_RUNNER_MODE=external
       - N8N_TASKS_RUNNER_AUTH_TOKEN=${N8N_TASKS_RUNNER_AUTH_TOKEN:-secret-token-123}
-      - N8N_TASKS_RUNNER_HOST=n8n-python-runner
+      - N8N_TASKS_RUNNER_HOST=n8n-task-runner
       - N8N_TASKS_RUNNER_PORT=5678
       - GENERIC_TIMEZONE=Asia/Bangkok
       - TZ=Asia/Bangkok
@@ -175,12 +175,12 @@ services:
     deploy:
       replicas: 2
     links:
-      - n8n-python-runner
+      - n8n-task-runner
 
-  n8n-python-runner:
+  n8n-task-runner:
     build:
-      context: ./n8n-python-runner
-    container_name: n8n-python-runner
+      context: ./n8n-task-runner
+    container_name: n8n-task-runner
     command: task-runner
     environment:
       - N8N_TASKS_RUNNER_AUTH_TOKEN=${N8N_TASKS_RUNNER_AUTH_TOKEN:-secret-token-123}

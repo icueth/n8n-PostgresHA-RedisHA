@@ -14,7 +14,7 @@ Deploying n8n in production requires a robust database, a queue system for high-
 - **Redis** for queue-based execution and scaling
 - **n8n Main Instance** serving web UI and webhooks
 - **n8n Workers** processing executions in parallel
-- **External Python Task Runner** for secure, isolated code execution
+- **External Task Runner** for secure, isolated code execution (Python/JS)
 
 Everything deploys automatically with proper networking, health checks, and restart policies.
 
@@ -56,12 +56,12 @@ Everything deploys automatically with proper networking, health checks, and rest
 
 ## Dependencies for n8n Enterprise-Ready Stack Hosting
 
-| Dependency        | Version | Purpose                           |
-| ----------------- | ------- | --------------------------------- |
-| **n8n**           | Latest  | Workflow automation engine        |
-| **Python Runner** | Latest  | Dedicated Python execution engine |
-| **PostgreSQL**    | 18      | Primary database with extensions  |
-| **Redis**         | 7.4     | Queue management for workers      |
+| Dependency      | Version | Purpose                            |
+| --------------- | ------- | ---------------------------------- |
+| **n8n**         | Latest  | Workflow automation engine         |
+| **Task Runner** | Latest  | Unified Python/JS execution engine |
+| **PostgreSQL**  | 18      | Primary database with extensions   |
+| **Redis**       | 7.4     | Queue management for workers       |
 
 ### PostgreSQL Extensions Included
 
@@ -91,8 +91,8 @@ Everything deploys automatically with proper networking, health checks, and rest
 ├────────────────────────────────────────────────────┤
 │                                                     │
 │  ┌─────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐  │
-│  │  n8n    │  │ worker-1 │  │ worker-2 │  │ Python   │  │
-│  │  (UI)   │  │ (queue)  │  │ (queue)  │  │ Runner   │  │
+│  │  n8n    │  │ worker-1 │  │ worker-2 │  │  Task    │  │
+│  │  (UI)   │  │ (queue)  │  │ (queue)  │  │  Runner  │  │
 │  └────┬────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘  │
 │       │            │             │             │         │
 │       ▼            ▼             ▼             ▼         │

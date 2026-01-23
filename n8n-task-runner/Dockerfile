@@ -1,5 +1,5 @@
-# ใช้ Image เฉพาะสำหรับ Python Task Runner
-FROM n8nio/n8n-python-runner:latest
+# ใช้ Image เฉพาะสำหรับ Unified Task Runner (Python, JS)
+FROM n8nio/runners:latest
 
 # สลับเป็น root เพื่อลง library เพิ่มเติม (ถ้าต้องการ)
 USER root
