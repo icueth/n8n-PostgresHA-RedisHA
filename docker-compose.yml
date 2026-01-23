@@ -181,6 +181,7 @@ services:
     build:
       context: ./n8n-python-runner
     container_name: n8n-python-runner
+    command: task-runner
     environment:
       - N8N_TASKS_RUNNER_AUTH_TOKEN=${N8N_TASKS_RUNNER_AUTH_TOKEN:-secret-token-123}
     ports:
