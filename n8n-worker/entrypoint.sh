@@ -6,14 +6,14 @@ echo "  n8n Worker - Queue Mode"
 echo "  Powered by PostgreSQL HA + Redis"
 echo "========================================="
 
-# Wait for n8n main to initialize (gives time for DB migrations)
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] Waiting for n8n main instance to be ready..."
-sleep 15
+# Wait for n8n main to initialize and database migrations
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Waiting for n8n main instance and database..."
+sleep 45
 
 echo ""
 echo "Worker Configuration:"
 echo "  - Worker Mode: worker"
-echo "  - Database Host: ${DB_POSTGRESDB_HOST:-postgres-18-proxy.railway.internal}"
+echo "  - Database Host: ${DB_POSTGRESDB_HOST:-postgres-18-primary.railway.internal}"
 echo "  - Database Name: ${DB_POSTGRESDB_DATABASE:-n8n}"
 echo "  - Redis Host: ${QUEUE_BULL_REDIS_HOST:-redis-n8n.railway.internal}"
 echo "  - Timezone: ${GENERIC_TIMEZONE:-UTC}"

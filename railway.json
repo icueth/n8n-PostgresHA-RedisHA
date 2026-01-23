@@ -98,7 +98,7 @@
             },
             "env": {
                 "DB_TYPE": "postgresdb",
-                "DB_POSTGRESDB_HOST": "${{postgres-18-proxy.RAILWAY_PRIVATE_DOMAIN}}",
+                "DB_POSTGRESDB_HOST": "${{postgres-18-primary.RAILWAY_PRIVATE_DOMAIN}}",
                 "DB_POSTGRESDB_PORT": "5432",
                 "DB_POSTGRESDB_DATABASE": "n8n",
                 "DB_POSTGRESDB_USER": "postgres",
@@ -136,7 +136,7 @@
             },
             "env": {
                 "DB_TYPE": "postgresdb",
-                "DB_POSTGRESDB_HOST": "${{postgres-18-proxy.RAILWAY_PRIVATE_DOMAIN}}",
+                "DB_POSTGRESDB_HOST": "${{postgres-18-primary.RAILWAY_PRIVATE_DOMAIN}}",
                 "DB_POSTGRESDB_PORT": "5432",
                 "DB_POSTGRESDB_DATABASE": "n8n",
                 "DB_POSTGRESDB_USER": "postgres",
