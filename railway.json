@@ -139,7 +139,9 @@
                 "N8N_TASKS_RUNNER_MODE": "external",
                 "N8N_TASKS_RUNNER_AUTH_TOKEN": "${{N8N_TASKS_RUNNER_AUTH_TOKEN}}",
                 "N8N_TASKS_RUNNER_HOST": "${{n8n-python-runner.RAILWAY_PRIVATE_DOMAIN}}",
-                "N8N_TASKS_RUNNER_PORT": "5678"
+                "N8N_TASKS_RUNNER_PORT": "5678",
+                "N8N_TASKS_RUNNER_BROKER_HOST": "0.0.0.0",
+                "OFFLOAD_MANUAL_EXECUTIONS_TO_WORKERS": "true"
             }
         },
         "n8n-worker": {
@@ -167,7 +169,8 @@
                 "N8N_TASKS_RUNNER_MODE": "external",
                 "N8N_TASKS_RUNNER_AUTH_TOKEN": "${{N8N_TASKS_RUNNER_AUTH_TOKEN}}",
                 "N8N_TASKS_RUNNER_HOST": "${{n8n-python-runner.RAILWAY_PRIVATE_DOMAIN}}",
-                "N8N_TASKS_RUNNER_PORT": "5678"
+                "N8N_TASKS_RUNNER_PORT": "5678",
+                "OFFLOAD_MANUAL_EXECUTIONS_TO_WORKERS": "true"
             }
         },
         "n8n-python-runner": {
