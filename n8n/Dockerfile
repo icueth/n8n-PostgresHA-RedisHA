@@ -3,13 +3,6 @@ FROM n8nio/n8n:latest
 # Switch to root for system configuration
 USER root
 
-# Install additional dependencies for better compatibility
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    bash \
-    curl \
-    jq \
-    && rm -rf /var/lib/apt/lists/*
-
 # Copy custom entrypoint
 COPY entrypoint.sh /custom-entrypoint.sh
 RUN chmod +x /custom-entrypoint.sh
@@ -19,6 +12,6 @@ USER node
 
 # Healthcheck
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
-    CMD curl -f http://localhost:5678/healthz || exit 1
+    CMD wget --no-verbose --tries=1 --spider http://localhost:5678/healthz || exit 1
 
 ENTRYPOINT ["/custom-entrypoint.sh"]

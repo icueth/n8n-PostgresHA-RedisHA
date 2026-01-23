@@ -35,7 +35,7 @@ wait_for_redis() {
     
     local max_attempts=60
     local attempt=1
-    local host="${QUEUE_BULL_REDIS_HOST:-redis-master.railway.internal}"
+    local host="${QUEUE_BULL_REDIS_HOST:-redis.railway.internal}"
     local port="${QUEUE_BULL_REDIS_PORT:-6379}"
     
     while [ $attempt -le $max_attempts ]; do
@@ -66,7 +66,7 @@ print_config() {
     echo "  - Worker Mode: worker"
     echo "  - Database Host: ${DB_POSTGRESDB_HOST:-postgres-18-proxy.railway.internal}"
     echo "  - Database Name: ${DB_POSTGRESDB_DATABASE:-n8n}"
-    echo "  - Redis Host: ${QUEUE_BULL_REDIS_HOST:-redis-master.railway.internal}"
+    echo "  - Redis Host: ${QUEUE_BULL_REDIS_HOST:-redis.railway.internal}"
     echo "  - Timezone: ${GENERIC_TIMEZONE:-UTC}"
     echo "  - Concurrency: ${N8N_CONCURRENCY_PRODUCTION_LIMIT:-10}"
     echo ""
