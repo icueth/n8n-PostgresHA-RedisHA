@@ -135,12 +135,11 @@
                 "EXECUTIONS_DATA_SAVE_ON_SUCCESS": "all",
                 "EXECUTIONS_DATA_SAVE_MANUAL_EXECUTIONS": "true",
                 "N8N_LOG_LEVEL": "info",
-                "N8N_TASKS_RUNNER_ENABLED": "true",
-                "N8N_TASKS_RUNNER_MODE": "external",
-                "N8N_TASKS_RUNNER_AUTH_TOKEN": "${{N8N_TASKS_RUNNER_AUTH_TOKEN}}",
-                "N8N_TASKS_RUNNER_HOST": "${{n8n-task-runner.RAILWAY_PRIVATE_DOMAIN}}",
-                "N8N_TASKS_RUNNER_PORT": "5678",
-                "N8N_TASKS_RUNNER_BROKER_HOST": "0.0.0.0",
+                "N8N_RUNNERS_ENABLED": "true",
+                "N8N_RUNNERS_MODE": "external",
+                "N8N_RUNNERS_AUTH_TOKEN": "${{N8N_TASKS_RUNNER_AUTH_TOKEN}}",
+                "N8N_RUNNERS_BROKER_LISTEN_ADDRESS": "0.0.0.0",
+                "N8N_NATIVE_PYTHON_RUNNER": "true",
                 "OFFLOAD_MANUAL_EXECUTIONS_TO_WORKERS": "true"
             }
         },
@@ -165,11 +164,11 @@
                 "TZ": "Asia/Bangkok",
                 "N8N_CONCURRENCY_PRODUCTION_LIMIT": "10",
                 "N8N_LOG_LEVEL": "info",
-                "N8N_TASKS_RUNNER_ENABLED": "true",
-                "N8N_TASKS_RUNNER_MODE": "external",
-                "N8N_TASKS_RUNNER_AUTH_TOKEN": "${{N8N_TASKS_RUNNER_AUTH_TOKEN}}",
-                "N8N_TASKS_RUNNER_HOST": "${{n8n-task-runner.RAILWAY_PRIVATE_DOMAIN}}",
-                "N8N_TASKS_RUNNER_PORT": "5678",
+                "N8N_RUNNERS_ENABLED": "true",
+                "N8N_RUNNERS_MODE": "external",
+                "N8N_RUNNERS_AUTH_TOKEN": "${{N8N_TASKS_RUNNER_AUTH_TOKEN}}",
+                "N8N_RUNNERS_BROKER_LISTEN_ADDRESS": "0.0.0.0",
+                "N8N_NATIVE_PYTHON_RUNNER": "true",
                 "OFFLOAD_MANUAL_EXECUTIONS_TO_WORKERS": "true"
             }
         },
@@ -178,7 +177,8 @@
                 "directory": "n8n-task-runner"
             },
             "env": {
-                "N8N_TASKS_RUNNER_AUTH_TOKEN": "${{N8N_TASKS_RUNNER_AUTH_TOKEN}}"
+                "N8N_RUNNERS_AUTH_TOKEN": "${{N8N_TASKS_RUNNER_AUTH_TOKEN}}",
+                "N8N_RUNNERS_TASK_BROKER_URI": "http://${{n8n.RAILWAY_PRIVATE_DOMAIN}}:5679"
             }
         }
     }
