@@ -2,74 +2,58 @@
 
 [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/YOUR_TEMPLATE_ID)
 
-**n8n Enterprise-Ready Stack** is a production-grade, self-hosted workflow automation platform that combines n8n with PostgreSQL High Availability and Redis for queue management. This template provides infinite horizontal scaling, automatic failover, and enterprise-level reliability—all deployed with a single click on Railway.
+**n8n Enterprise-Ready Stack** is a production-grade, self-hosted workflow automation platform combining n8n with PostgreSQL HA and Redis for queue management. Deploy with a single click and get infinite horizontal scaling, automatic failover, and enterprise reliability.
 
 ---
 
-## ✨ About Hosting n8n Enterprise-Ready Stack
+## About Hosting n8n Enterprise-Ready Stack
 
-Deploying n8n in production requires more than just the base application. You need a robust database that won't lose your workflow data, a queue system for handling high-volume executions, and the ability to scale workers as your automation needs grow.
+Deploying n8n in production requires a robust database, a queue system for high-volume executions, and the ability to scale workers. This template provides:
 
-This template solves all of these challenges by providing a complete, pre-configured infrastructure stack:
+- **PostgreSQL HA** with Primary-Replica replication
+- **Redis** for queue-based execution and scaling
+- **n8n Main Instance** serving web UI and webhooks
+- **n8n Workers** processing executions in parallel
 
-- **PostgreSQL HA** with Primary-Replica replication for data redundancy
-- **Redis** for queue-based execution enabling horizontal scaling
-- **n8n Main Instance** serving the web UI and handling webhooks
-- **n8n Workers** processing workflow executions in parallel
-
-The entire stack deploys automatically on Railway with proper networking, health checks, and restart policies configured out of the box.
+Everything deploys automatically with proper networking, health checks, and restart policies.
 
 ---
 
-## 🎯 Common Use Cases
+## Common Use Cases
 
-### 1. Marketing Automation at Scale
+### Marketing Automation
 
-- Sync leads between CRM, email marketing, and ad platforms in real-time
-- Process thousands of webhook events from landing pages and forms
-- Automate multi-channel campaign workflows across Mailchimp, HubSpot, and Salesforce
+- Sync leads between CRM, email marketing, and ad platforms
+- Process webhooks from landing pages and forms
 - Build custom integrations that Zapier doesn't offer
 
-### 2. E-Commerce Operations
+### E-Commerce Operations
 
-- Automate order processing, inventory updates, and shipping notifications
-- Sync product data across Shopify, WooCommerce, and marketplace platforms
-- Process customer support tickets and automate response workflows
-- Build custom checkout automation with payment provider integrations
+- Automate order processing and shipping notifications
+- Sync products across Shopify, WooCommerce, marketplaces
+- Build checkout automation with payment integrations
 
-### 3. Data Pipeline & ETL
+### Data Pipeline & ETL
 
-- Extract data from APIs, databases, and file sources on schedule
-- Transform and clean data using built-in functions or custom code
-- Load processed data into data warehouses, dashboards, or reporting tools
-- Monitor pipeline health with error notifications and retry logic
+- Extract data from APIs, databases, and files on schedule
+- Transform and load data into warehouses or dashboards
+- Monitor pipeline health with error notifications
 
-### 4. DevOps & IT Automation
+### DevOps & IT Automation
 
-- Automate deployment notifications to Slack, Discord, or Teams
-- Process GitHub/GitLab webhooks for CI/CD orchestration
-- Monitor server health and trigger alerts or auto-remediation
-- Sync issues across Jira, Linear, Notion, and project management tools
+- Automate deployment notifications to Slack/Discord
+- Process GitHub/GitLab webhooks for CI/CD
+- Sync issues across Jira, Linear, Notion
 
-### 5. AI & LLM Workflows
+### AI & LLM Workflows
 
-- Build RAG (Retrieval Augmented Generation) pipelines with vector databases
-- Automate content generation with OpenAI, Anthropic, or local LLMs
-- Create chatbots and AI agents that integrate with your existing tools
-- Process documents with OCR, summarization, and classification
-
-### 6. Internal Tools & Business Processes
-
-- Automate employee onboarding workflows across HR systems
-- Build approval workflows for purchase orders and expense reports
-- Sync data between Google Workspace, Microsoft 365, and internal databases
-- Create custom dashboards and reporting automation
+- Build RAG pipelines with vector databases
+- Automate content generation with OpenAI, Anthropic
+- Create AI chatbots integrated with existing tools
 
 ---
 
-## 📦 Dependencies for n8n Enterprise-Ready Stack Hosting
-
-### Core Dependencies
+## Dependencies for n8n Enterprise-Ready Stack Hosting
 
 | Dependency     | Version | Purpose                          |
 | -------------- | ------- | -------------------------------- |
@@ -79,228 +63,114 @@ The entire stack deploys automatically on Railway with proper networking, health
 
 ### PostgreSQL Extensions Included
 
-This template comes with powerful PostgreSQL extensions pre-installed:
-
-- **PostGIS** - Geospatial data types and functions
-- **pgvector** - Vector similarity search for AI/ML workloads
-- **pg_cron** - Schedule jobs directly in PostgreSQL
-- **pg_partman** - Automatic table partitioning for large datasets
-- **uuid-ossp** - Native UUID generation
-- **pg_stat_statements** - Query performance monitoring
-- **pg_trgm** - Fuzzy text search and similarity matching
+- **PostGIS** - Geospatial data types
+- **pgvector** - Vector search for AI/ML
+- **pg_cron** - Scheduled jobs in PostgreSQL
+- **pg_partman** - Table partitioning
 
 ### Deployment Dependencies
 
-This template requires Railway's infrastructure with the following configuration:
-
-| Service            | Recommended RAM | Recommended CPU |
-| ------------------ | --------------- | --------------- |
-| n8n (Main)         | 1GB             | 0.5 vCPU        |
-| n8n-worker (x2)    | 512MB each      | 0.25 vCPU       |
-| PostgreSQL Primary | 1GB             | 0.5 vCPU        |
-| PostgreSQL Replica | 512MB           | 0.25 vCPU       |
-| Redis              | 256MB           | 0.1 vCPU        |
-
-**Estimated Monthly Cost**: $25-45/month (varies by usage)
+| Service            | RAM   | Est. Cost/mo |
+| ------------------ | ----- | ------------ |
+| n8n                | 1GB   | $5-10        |
+| n8n-worker x2      | 512MB | $5-10        |
+| PostgreSQL Primary | 1GB   | $10-15       |
+| PostgreSQL Replica | 512MB | $5-8         |
+| Redis              | 256MB | $3-5         |
+| **Total**          |       | **$28-48**   |
 
 ---
 
-## 🏗️ Architecture Overview
+## Architecture Overview
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    Railway Project                               │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│   ┌─────────────────────────────────────────────────────────┐   │
-│   │                    n8n Layer                             │   │
-│   │                                                          │   │
-│   │   ┌─────────────┐    ┌─────────────┐  ┌─────────────┐   │   │
-│   │   │    n8n      │    │ n8n-worker  │  │ n8n-worker  │   │   │
-│   │   │  (Main UI)  │    │     #1      │  │     #2      │   │   │
-│   │   │ Port 5678   │    │   (Queue)   │  │   (Queue)   │   │   │
-│   │   └──────┬──────┘    └──────┬──────┘  └──────┬──────┘   │   │
-│   └──────────┼──────────────────┼─────────────────┼─────────┘   │
-│              │                  │                 │              │
-│              ▼                  ▼                 ▼              │
-│   ┌─────────────────────────────────────────────────────────┐   │
-│   │                    Redis Layer                           │   │
-│   │                                                          │   │
-│   │                    ┌──────────────┐                      │   │
-│   │                    │    Redis     │                      │   │
-│   │                    │   (Queue)    │                      │   │
-│   │                    │  Port 6379   │                      │   │
-│   │                    └──────────────┘                      │   │
-│   └─────────────────────────────────────────────────────────┘   │
-│                                                                  │
-│   ┌─────────────────────────────────────────────────────────┐   │
-│   │                PostgreSQL HA Layer                       │   │
-│   │                                                          │   │
-│   │   ┌──────────────┐    ┌──────────────┐                  │   │
-│   │   │   Primary    │───▶│   Replica    │                  │   │
-│   │   │ (Read/Write) │    │ (Read-Only)  │                  │   │
-│   │   │  PostgreSQL  │    │  PostgreSQL  │                  │   │
-│   │   └──────────────┘    └──────────────┘                  │   │
-│   │                                                          │   │
-│   └─────────────────────────────────────────────────────────┘   │
-│                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────┐
+│                 Railway Project                     │
+├────────────────────────────────────────────────────┤
+│                                                     │
+│  ┌─────────┐  ┌──────────┐  ┌──────────┐          │
+│  │  n8n    │  │ worker-1 │  │ worker-2 │          │
+│  │  (UI)   │  │ (queue)  │  │ (queue)  │          │
+│  └────┬────┘  └────┬─────┘  └────┬─────┘          │
+│       │            │             │                 │
+│       ▼            ▼             ▼                 │
+│  ┌─────────────────────────────────────┐          │
+│  │            Redis (Queue)            │          │
+│  └─────────────────────────────────────┘          │
+│                     │                              │
+│  ┌──────────────────┴──────────────────┐          │
+│  │         PostgreSQL HA               │          │
+│  │  ┌─────────┐    ┌─────────┐        │          │
+│  │  │ Primary │───▶│ Replica │        │          │
+│  │  └─────────┘    └─────────┘        │          │
+│  └─────────────────────────────────────┘          │
+└────────────────────────────────────────────────────┘
 ```
-
-### How It Works
-
-1. **n8n Main Instance** handles the web UI, webhook endpoints, and orchestrates workflow executions
-2. **n8n Workers** pull jobs from Redis queue and execute workflows in parallel
-3. **PostgreSQL Primary** stores all workflow definitions, credentials, and execution data
-4. **PostgreSQL Replica** provides read-only access and data redundancy
-5. **Redis** manages the job queue for distributed execution across workers
 
 ---
 
-## � Configuration
+## Configuration
 
-### Environment Variables
+### Auto-Generated Variables
 
-The template automatically generates secure values for sensitive configuration. You can customize these in Railway's Variables panel:
-
-| Variable                         | Description                    | Auto-Generated |
-| -------------------------------- | ------------------------------ | -------------- |
-| `POSTGRES_PASSWORD`              | PostgreSQL database password   | ✅ Yes         |
-| `REDIS_PASSWORD`                 | Redis authentication password  | ✅ Yes         |
-| `N8N_ENCRYPTION_KEY`             | Encryption key for credentials | ✅ Yes         |
-| `N8N_USER_MANAGEMENT_JWT_SECRET` | JWT secret for user auth       | ✅ Yes         |
+| Variable                         | Description            |
+| -------------------------------- | ---------------------- |
+| `POSTGRES_PASSWORD`              | PostgreSQL password    |
+| `REDIS_PASSWORD`                 | Redis password         |
+| `N8N_ENCRYPTION_KEY`             | Credentials encryption |
+| `N8N_USER_MANAGEMENT_JWT_SECRET` | User auth JWT          |
 
 ### Customizable Settings
 
-| Variable                           | Default | Description                        |
-| ---------------------------------- | ------- | ---------------------------------- |
-| `EXECUTIONS_MODE`                  | `queue` | Use `regular` for simple setups    |
-| `GENERIC_TIMEZONE`                 | `UTC`   | Your preferred timezone            |
-| `N8N_CONCURRENCY_PRODUCTION_LIMIT` | `10`    | Max parallel executions per worker |
-| `EXECUTIONS_DATA_MAX_AGE`          | `168`   | Hours to keep execution history    |
+| Variable                           | Default | Description                     |
+| ---------------------------------- | ------- | ------------------------------- |
+| `EXECUTIONS_MODE`                  | `queue` | Use `regular` for simple setups |
+| `GENERIC_TIMEZONE`                 | `UTC`   | Your timezone                   |
+| `N8N_CONCURRENCY_PRODUCTION_LIMIT` | `10`    | Max parallel executions/worker  |
 
 ---
 
-## 📈 Scaling Guide
+## Scaling Guide
 
-### Vertical Scaling (More Power per Instance)
+### Horizontal Scaling
 
-Increase RAM and CPU for each service in Railway's settings panel when you need more processing power per execution.
+| Daily Executions | Workers |
+| ---------------- | ------- |
+| < 1,000          | 1       |
+| 1,000 - 10,000   | 2-3     |
+| 10,000 - 100,000 | 5-10    |
+| 100,000+         | 10+     |
 
-### Horizontal Scaling (More Workers)
-
-Add more n8n-worker instances to handle higher execution volumes:
-
-| Daily Executions | Recommended Workers |
-| ---------------- | ------------------- |
-| < 1,000          | 1 worker            |
-| 1,000 - 10,000   | 2-3 workers         |
-| 10,000 - 100,000 | 5-10 workers        |
-| 100,000+         | 10+ workers         |
-
-To add more workers, duplicate the `n8n-worker` service in Railway and it will automatically connect to the same queue.
+Duplicate `n8n-worker` service to add more workers.
 
 ---
 
-## 💰 Cost Comparison
+## Cost Comparison
 
-| Solution          | Monthly Cost | Executions    | Limitations           |
-| ----------------- | ------------ | ------------- | --------------------- |
-| Zapier Team       | $73.50       | 2,000 tasks   | Per-task pricing      |
-| Make.com Pro      | $16          | 10,000 ops    | Per-operation pricing |
-| n8n Cloud Pro     | $50          | 10,000 exec   | Vendor lock-in        |
-| **This Template** | ~$35         | **Unlimited** | Self-hosted control   |
-
-**Save thousands annually** while maintaining full control over your data and automation infrastructure.
+| Solution          | Monthly  | Executions    |
+| ----------------- | -------- | ------------- |
+| Zapier Team       | $73.50   | 2,000         |
+| Make.com Pro      | $16      | 10,000        |
+| **This Template** | **~$35** | **Unlimited** |
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
-### 1. One-Click Deploy
-
-Click the button below to deploy the entire stack to Railway:
-
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/YOUR_TEMPLATE_ID)
-
-### 2. Configure Variables
-
-Railway will prompt you to set the required variables. Secure values are auto-generated for you.
-
-### 3. Wait for Deployment
-
-The stack takes approximately 3-5 minutes to fully deploy. PostgreSQL needs to initialize before n8n can connect.
-
-### 4. Access n8n
-
-Once deployed, access your n8n instance at:
-
-```
-https://n8n-production-xxxx.up.railway.app
-```
-
-Create your admin account on first login.
+1. **Deploy** - Click the Railway button above
+2. **Configure** - Set variables (auto-generated)
+3. **Wait** - 3-5 minutes for full deployment
+4. **Access** - Visit your n8n URL and create admin account
 
 ---
 
-## 🛡️ Security Features
+## Troubleshooting
 
-- **Encrypted Credentials**: All sensitive data encrypted at rest with your unique encryption key
-- **HTTPS Enforced**: All traffic encrypted in transit via Railway's SSL
-- **Secure Cookies**: HTTP-only, secure cookies for session management
-- **Private Networking**: Internal services communicate over Railway's private network
-- **No Public Database Access**: PostgreSQL and Redis are not exposed to the internet
+**n8n won't start**: Check `N8N_ENCRYPTION_KEY` is set, wait for PostgreSQL to initialize.
 
----
+**Workers not processing**: Verify `EXECUTIONS_MODE=queue` and Redis connection.
 
-## 🔍 Monitoring & Observability
-
-### Built-in Metrics
-
-n8n exposes Prometheus-compatible metrics at `/metrics`:
-
-```
-https://your-n8n-domain.railway.app/metrics
-```
-
-### Health Endpoints
-
-| Service    | Health Check   |
-| ---------- | -------------- |
-| n8n        | `GET /healthz` |
-| PostgreSQL | `pg_isready`   |
-| Redis      | `PING`         |
-
----
-
-## 🐛 Troubleshooting
-
-### n8n won't start
-
-1. Check Railway deploy logs for error messages
-2. Verify `N8N_ENCRYPTION_KEY` is set
-3. Ensure PostgreSQL is healthy before n8n starts
-
-### Workers not processing
-
-1. Verify `EXECUTIONS_MODE=queue` is set
-2. Check Redis connection in worker logs
-3. Ensure workers have the same `N8N_ENCRYPTION_KEY`
-
-### Database connection errors
-
-1. Wait 2-3 minutes for PostgreSQL to fully initialize
-2. Check `POSTGRES_PASSWORD` matches across services
-3. Verify PostgreSQL service is healthy in Railway
-
----
-
-## � Resources
-
-- **n8n Documentation**: [docs.n8n.io](https://docs.n8n.io)
-- **Railway Documentation**: [docs.railway.app](https://docs.railway.app)
-- **n8n Community**: [community.n8n.io](https://community.n8n.io)
-- **Template Source**: [GitHub Repository](https://github.com/your-repo)
+**Database errors**: Wait 2-3 minutes for PostgreSQL, check passwords match.
 
 ---
 
@@ -310,29 +180,14 @@ Railway is a singular platform to deploy your infrastructure stack. Railway will
 
 By deploying n8n Enterprise-Ready Stack on Railway, you are one step closer to supporting a complete full-stack application with minimal burden. Host your servers, databases, AI agents, and more on Railway.
 
-### Railway Benefits for n8n
+---
 
-- **One-Click Deployment**: No DevOps knowledge required
-- **Automatic SSL**: HTTPS enabled out of the box
-- **Private Networking**: Services communicate securely
-- **Instant Scaling**: Add resources or workers in seconds
-- **Pay-as-you-go**: Only pay for what you use
-- **Global Regions**: Deploy close to your users
+## Resources
+
+- [n8n Documentation](https://docs.n8n.io)
+- [Railway Documentation](https://docs.railway.app)
+- [n8n Community](https://community.n8n.io)
 
 ---
 
-## 📝 License
-
-This template is released under the MIT License. n8n Community Edition is fair-source licensed under the [Sustainable Use License](https://github.com/n8n-io/n8n/blob/master/LICENSE.md).
-
----
-
-<div align="center">
-
-**Built with ❤️ for the Railway and n8n communities**
-
-⭐ Star this template if it helped you!
-
-[Deploy Now](https://railway.app/template/YOUR_TEMPLATE_ID) | [Report Issues](https://github.com/your-repo/issues) | [Contribute](https://github.com/your-repo)
-
-</div>
+**MIT License** | Built with ❤️ for Railway and n8n communities
