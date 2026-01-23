@@ -8,7 +8,7 @@
 
 [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/TEMPLATE_ID)
 
-_n8n + PostgreSQL HA + Redis HA = Enterprise-Grade Automation_
+_n8n + PostgreSQL HA + Redis = Enterprise-Grade Automation_
 
 </div>
 
@@ -18,14 +18,14 @@ _n8n + PostgreSQL HA + Redis HA = Enterprise-Grade Automation_
 
 Most n8n deployments use SQLite which **cannot handle production workloads**. This template provides:
 
-| Feature          | Basic n8n                  | This Template                          |
-| ---------------- | -------------------------- | -------------------------------------- |
-| Database         | SQLite (single-file)       | PostgreSQL HA (Primary + Replica)      |
-| Caching          | None                       | Redis HA (Master + Replica + Sentinel) |
-| Scaling          | ❌ None                    | ✅ Horizontal (Queue Mode + Workers)   |
-| Failover         | ❌ Manual                  | ✅ Automatic                           |
-| Data Safety      | ⚠️ Single point of failure | ✅ Replicated + Persistent             |
-| Production Ready | ❌                         | ✅                                     |
+| Feature          | Basic n8n                  | This Template                        |
+| ---------------- | -------------------------- | ------------------------------------ |
+| Database         | SQLite (single-file)       | PostgreSQL HA (Primary + Replica)    |
+| Caching          | None                       | Redis (Single Instance)              |
+| Scaling          | ❌ None                    | ✅ Horizontal (Queue Mode + Workers) |
+| Failover         | ❌ Manual                  | ✅ Automatic (PostgreSQL)            |
+| Data Safety      | ⚠️ Single point of failure | ✅ Replicated + Persistent           |
+| Production Ready | ❌                         | ✅                                   |
 
 ### 💰 Target Market
 
@@ -56,23 +56,14 @@ Most n8n deployments use SQLite which **cannot handle production workloads**. Th
 │               │                       │                  │                          │
 │               ▼                       ▼                  ▼                          │
 │    ┌─────────────────────────────────────────────────────────────────────────────┐  │
-│    │                           Redis HA Layer                                     │  │
+│    │                           Redis Layer                                        │  │
 │    │                                                                              │  │
-│    │   ┌──────────────────┐                                                      │  │
-│    │   │  redis-haproxy   │◀── n8n connects here (single endpoint)               │  │
-│    │   │ (Sentinel Proxy) │                                                      │  │
-│    │   │    Port 6379     │                                                      │  │
-│    │   └────────┬─────────┘                                                      │  │
-│    │            │ Routes to current master                                       │  │
-│    │            ▼                                                                │  │
-│    │   ┌──────────────┐    ┌──────────────┐    ┌────────────────┐               │  │
-│    │   │ redis-master │───▶│ redis-replica│    │ redis-sentinel │               │  │
-│    │   │ (Read/Write) │    │  (Standby)   │◀───│  (Monitors &   │               │  │
-│    │   │  Port 6379   │    │  Port 6379   │    │   Failover)    │               │  │
-│    │   └──────────────┘    └──────────────┘    └────────────────┘               │  │
-│    │          ▲                    │                    │                        │  │
-│    │          └────────────────────┴────────────────────┘                        │  │
-│    │              Auto-promotion on master failure                               │  │
+│    │                         ┌──────────────┐                                    │  │
+│    │                         │    redis     │◀── n8n connects here               │  │
+│    │                         │ (Read/Write) │                                    │  │
+│    │                         │  Port 6379   │                                    │  │
+│    │                         └──────────────┘                                    │  │
+│    │                                                                              │  │
 │    └─────────────────────────────────────────────────────────────────────────────┘  │
 │                                                                                      │
 │    ┌─────────────────────────────────────────────────────────────────────────────┐  │
@@ -98,18 +89,15 @@ Most n8n deployments use SQLite which **cannot handle production workloads**. Th
 
 ### 🔄 HA Failover Flow
 
-**Redis Failover:**
-
-1. Sentinel detects master failure
-2. Sentinel promotes replica to new master
-3. HAProxy detects change and updates routing
-4. n8n continues without interruption ✅
-
 **PostgreSQL Failover:**
 
 1. pgpool2 detects primary failure
 2. Traffic routes to replica automatically
 3. Manual promotion when ready
+
+**Redis:**
+
+Redis runs as a single instance for simplicity. For production workloads that require Redis HA, consider using Railway's managed Redis or adding Redis Sentinel separately.
 
 ---
 
@@ -193,11 +181,11 @@ Create your admin account on first visit.
 - **Replica**: Read-only (data redundancy)
 - **Proxy** (pgpool2): Load balancing & connection pooling
 
-### Redis HA
+### Redis
 
-- **Master**: Job queue storage
-- **Replica**: Read scaling
-- **Sentinel**: Automatic failover monitoring
+- **Single Instance**: Job queue storage for n8n workflows
+- Simple and reliable for most workloads
+- Persistent storage with Railway volumes
 
 ---
 
@@ -241,7 +229,7 @@ const pgConfig = {
 
 // Redis
 const redisConfig = {
-  host: "redis-master.railway.internal",
+  host: "redis.railway.internal",
   port: 6379,
   password: process.env.REDIS_PASSWORD,
 };
@@ -344,10 +332,8 @@ https://your-n8n-domain.railway.app/metrics
 | PostgreSQL Primary | 1GB RAM          | $10-15            |
 | PostgreSQL Replica | 512MB RAM        | $5-8              |
 | PostgreSQL Proxy   | 256MB RAM        | $3-5              |
-| Redis Master       | 256MB RAM        | $3-5              |
-| Redis Replica      | 256MB RAM        | $3-5              |
-| Redis Sentinel     | 128MB RAM        | $2-3              |
-| **Total**          |                  | **~$36-61/month** |
+| Redis              | 256MB RAM        | $3-5              |
+| **Total**          |                  | **~$31-53/month** |
 
 Compare to:
 

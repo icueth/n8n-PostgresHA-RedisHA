@@ -48,66 +48,47 @@ services:
     networks:
       - n8n-network
 
+  postgres-proxy:
+    build:
+      context: ./postgresql-18-ha
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ROLE=PROXY
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-changeme}
+      - PRIMARY_HOST=postgres-primary
+      - REPLICA_HOST=postgres-replica
+    ports:
+      - "5433:5432"
+    depends_on:
+      postgres-primary:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h localhost -p 5432 -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - n8n-network
+
   # ==========================================
-  # Redis HA Layer
+  # Redis (Single Instance)
   # ==========================================
   
-  redis-master:
+  redis:
     build:
-      context: ./redis-master
+      context: ./redis
       dockerfile: Dockerfile
     environment:
       - REDIS_PASSWORD=${REDIS_PASSWORD:-changeme}
     volumes:
-      - redis-master-data:/data
+      - redis-data:/data
     ports:
       - "6379:6379"
-    networks:
-      - n8n-network
-
-  redis-replica:
-    build:
-      context: ./redis-replica
-      dockerfile: Dockerfile
-    environment:
-      - REDIS_PASSWORD=${REDIS_PASSWORD:-changeme}
-      - MASTER_HOST=redis-master
-    volumes:
-      - redis-replica-data:/data
-    depends_on:
-      - redis-master
-    networks:
-      - n8n-network
-
-  redis-sentinel:
-    build:
-      context: ./redis-sentinel
-      dockerfile: Dockerfile
-    environment:
-      - REDIS_PASSWORD=${REDIS_PASSWORD:-changeme}
-      - MASTER_HOST=redis-master
-    depends_on:
-      - redis-master
-      - redis-replica
-    ports:
-      - "26379:26379"
-    networks:
-      - n8n-network
-
-  redis-haproxy:
-    build:
-      context: ./redis-haproxy
-      dockerfile: Dockerfile
-    environment:
-      - REDIS_PASSWORD=${REDIS_PASSWORD:-changeme}
-      - SENTINEL_HOST=redis-sentinel
-      - SENTINEL_PORT=26379
-      - SENTINEL_MASTER_NAME=mymaster
-    depends_on:
-      - redis-sentinel
-    ports:
-      - "6380:6379"
-      - "8404:8404"
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-changeme}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - n8n-network
 
@@ -121,14 +102,14 @@ services:
       dockerfile: Dockerfile
     environment:
       - DB_TYPE=postgresdb
-      - DB_POSTGRESDB_HOST=postgres-primary
+      - DB_POSTGRESDB_HOST=postgres-proxy
       - DB_POSTGRESDB_PORT=5432
       - DB_POSTGRESDB_DATABASE=n8n
       - DB_POSTGRESDB_USER=postgres
       - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD:-changeme}
       - DB_POSTGRESDB_SSL_ENABLED=false
       - EXECUTIONS_MODE=queue
-      - QUEUE_BULL_REDIS_HOST=redis-haproxy
+      - QUEUE_BULL_REDIS_HOST=redis
       - QUEUE_BULL_REDIS_PORT=6379
       - QUEUE_BULL_REDIS_PASSWORD=${REDIS_PASSWORD:-changeme}
       - QUEUE_HEALTH_CHECK_ACTIVE=true
@@ -145,10 +126,10 @@ services:
     ports:
       - "5678:5678"
     depends_on:
-      postgres-primary:
+      postgres-proxy:
         condition: service_healthy
-      redis-haproxy:
-        condition: service_started
+      redis:
+        condition: service_healthy
     volumes:
       - n8n-data:/home/node/.n8n
     networks:
@@ -160,14 +141,14 @@ services:
       dockerfile: Dockerfile
     environment:
       - DB_TYPE=postgresdb
-      - DB_POSTGRESDB_HOST=postgres-primary
+      - DB_POSTGRESDB_HOST=postgres-proxy
       - DB_POSTGRESDB_PORT=5432
       - DB_POSTGRESDB_DATABASE=n8n
       - DB_POSTGRESDB_USER=postgres
       - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD:-changeme}
       - DB_POSTGRESDB_SSL_ENABLED=false
       - EXECUTIONS_MODE=queue
-      - QUEUE_BULL_REDIS_HOST=redis-haproxy
+      - QUEUE_BULL_REDIS_HOST=redis
       - QUEUE_BULL_REDIS_PORT=6379
       - QUEUE_BULL_REDIS_PASSWORD=${REDIS_PASSWORD:-changeme}
       - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY:-your-encryption-key-min-32-chars}
@@ -189,8 +170,7 @@ services:
 volumes:
   postgres-primary-data:
   postgres-replica-data:
-  redis-master-data:
-  redis-replica-data:
+  redis-data:
   n8n-data:
 
 # ==========================================
